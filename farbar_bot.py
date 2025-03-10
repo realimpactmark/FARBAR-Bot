@@ -1,5 +1,6 @@
 import re
 import streamlit as st
+from fpdf import FPDF
 
 class FARBARContractBotWeb:
     def __init__(self):
@@ -59,7 +60,32 @@ class FARBARContractBotWeb:
         st.subheader("Review Your Contract Details")
         for key, value in st.session_state.contract_data.items():
             st.write(f"**{key.replace('_', ' ').title()}**: {value}")
-        st.success("Your FARBAR contract details have been collected. You can now proceed to fill out the official document.")
+        
+        if st.button("Generate Contract PDF"):
+            self.generate_pdf()
+    
+    def generate_pdf(self):
+        pdf = FPDF()
+        pdf.set_auto_page_break(auto=True, margin=15)
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+        
+        pdf.cell(200, 10, "FARBAR Residential Contract for Sale and Purchase", ln=True, align='C')
+        pdf.ln(10)
+        
+        for key, value in st.session_state.contract_data.items():
+            pdf.cell(200, 10, f"{key.replace('_', ' ').title()}: {value}", ln=True, align='L')
+        
+        pdf_filename = "FARBAR_Contract.pdf"
+        pdf.output(pdf_filename)
+        
+        with open(pdf_filename, "rb") as file:
+            st.download_button(
+                label="Download Contract PDF",
+                data=file,
+                file_name=pdf_filename,
+                mime="application/pdf"
+            )
 
 if __name__ == "__main__":
     bot = FARBARContractBotWeb()
