@@ -49,7 +49,7 @@ class FARBARContractBotWeb:
             if response.strip():
                 st.session_state.contract_data[step_key] = response.strip()
                 st.session_state.current_step += 1
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.warning("Please enter a response before proceeding.")
         
